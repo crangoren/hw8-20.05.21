@@ -5,9 +5,6 @@ package Lessons;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Простейшая реализация сервиса аутентификации, которая работает на встроенном списке
- */
 public class BaseAuthService implements AuthService {
 
     private class Entry {
@@ -55,6 +52,7 @@ public class BaseAuthService implements AuthService {
         }*/
         //return null;
     }
+
 
 
 }

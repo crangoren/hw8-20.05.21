@@ -18,4 +18,6 @@ public class ChatConstants {
 
     public static final String PRIVATE_MESSAGE = "/w";
 
+    public static final long MAX_DELAY_TIME = 120;
+
 }

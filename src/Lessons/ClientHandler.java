@@ -4,29 +4,30 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 
-/**
- * Обслуживает клиента (отвечает за связь между клиентом и сервером)
- */
+
 public class ClientHandler {
 
     private MyServer server;
     private Socket socket;
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
-
+    private LocalDateTime connectTime = LocalDateTime.now();
     private String name;
+    private boolean isAuth = false;
 
     public String getName() {
         return name;
     }
 
     public ClientHandler(MyServer server, Socket socket) {
+
         try {
             this.server = server;
             this.socket = socket;
@@ -49,6 +50,8 @@ public class ClientHandler {
         }
     }
 
+
+
     private void readMessages() throws IOException {
         while (true) {
             String messageFromClient = inputStream.readUTF();
@@ -69,7 +72,7 @@ public class ClientHandler {
                     targetMessage[i] = targetMessage[i].replaceAll("[^\\w]", "");
                 }
                 List<String> target = Collections.singletonList(targetMessage[1]);
-                //target.add(name);
+                target.add(name);
 
                 String[] messageArr = messageFromClient.split("\\s+");
                 for (int i = 2; i < messageArr.length; i++) {
@@ -87,20 +90,23 @@ public class ClientHandler {
         }
     }
 
-    // /auth login pass
     private void authentification() throws IOException {
+
+
         while (true) {
             String message = inputStream.readUTF();
             if (message.startsWith(ChatConstants.AUTH_COMMAND)) {
                 String[] parts = message.split("\\s+");
                 Optional<String> nick = server.getAuthService().getNickByLoginAndPass(parts[1], parts[2]);
                 if (nick.isPresent()) {
-                    //проверим, что такого нет
+
                     if (!server.isNickBusy(nick.get())) {
                         sendMsg(ChatConstants.AUTH_OK + " " + nick);
+                        isAuth = true;
                         name = nick.get();
                         server.subscribe(this);
                         server.broadcastMessage(name + " вошел в чат");
+
                         return;
                     } else {
                         sendMsg("Ник уже используется");
@@ -110,6 +116,9 @@ public class ClientHandler {
                 }
             }
         }
+    }
+    boolean isActive() {
+        return isAuth;
     }
 
     public void sendMsg(String message) {
@@ -139,6 +148,11 @@ public class ClientHandler {
             e.printStackTrace();
         }
     }
+    LocalDateTime getConnectTime() {
+        return connectTime;
+    }
+
+
 
 
 }

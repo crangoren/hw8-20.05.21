@@ -20,4 +20,6 @@ public interface AuthService {
      * Получить никнейм
      */
     Optional<String> getNickByLoginAndPass(String login, String pass);
+
+
 }
