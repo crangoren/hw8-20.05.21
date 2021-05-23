@@ -25,9 +25,7 @@ public class MyServer {
             connectionTimeout();
 
             while (true) {
-
                 System.out.println("Сервер ожидает подключения");
-
                 Socket socket = server.accept();
                 System.out.println("Клиент подключился");
                 new ClientHandler(this, socket);
@@ -41,8 +39,6 @@ public class MyServer {
             }
         }
     }
-
-
 
     public AuthService getAuthService() {
         return authService;
@@ -100,7 +96,7 @@ public class MyServer {
                         ClientHandler client = i.next();
                         if (!client.isActive()
                                 && Duration.between(client.getConnectTime(), now).getSeconds() > ChatConstants.MAX_DELAY_TIME) {
-                            System.out.println("Тайм-аут ожидания авторизации. Соединение закрыто.");
+                            System.out.println("Тайм-аут ожидания авторизации. Соединение закрыто");
                             client.closeConnection();
                             i.remove();
                         }
