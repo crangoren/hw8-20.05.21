@@ -105,7 +105,7 @@ public class MyServer {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        }).setDaemon(true);
     }
 
 
